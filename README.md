@@ -9,20 +9,64 @@
 
 ## Стек
 
-- Java
+- Java 21
+- JUnit 5
+- Selenium WebDriver
+- Gradle
+- Docker
 
-## Установка
+## Требования
 
-<!-- Опишите установку: клонирование, зависимости, переменные окружения -->
+- Java 21+
+- Google Chrome
+- Docker
+
+## Установка и запуск приложения
+
+1. Клонирование репозитория:
 
 ```bash
 git clone https://github.com/mxmrbkv/qa-auto-engineer-java-project-385.git
 cd qa-auto-engineer-java-project-385
 ```
 
+2. Запуск контейнера с приложением:
+
+```bash
+make start
+```
+
+Приложение будет доступно по адресу [http://localhost:5173](http://localhost:5173).
+
+> Для авторизации в приложении подходит любая комбинация логина и пароля (например, `admin` / `admin`).
+
+3. Остановка контейнера:
+
+```bash
+make stop
+```
+
 ## Использование
 
-<!-- Добавьте примеры запуска и запись asciinema — именно это смотрит работодатель -->
+### Сборка и подготовка тестов
+
+```bash
+make install
+```
+
+### Запуск тестов
+
+Запуск тестов с указанием адреса приложения через переменную окружения `APP_BASE_URL`:
+
+```bash
+APP_BASE_URL=http://localhost:5173 make test
+```
+
+По умолчанию тесты выполняются в headless-режиме (`--headless=new`). Для запуска в обычном графическом окне браузера:
+
+```bash
+HEADLESS=false APP_BASE_URL=http://localhost:5173 make test
+```
 
 ---
 
