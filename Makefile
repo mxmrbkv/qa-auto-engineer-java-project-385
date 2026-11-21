@@ -10,7 +10,7 @@ ifeq ($(OS),Windows_NT)
 endif
 
 install:
-	./gradlew testClasses
+	$(GRADLEW) testClasses
 
 start:
 	docker run --rm --name $(APP_CONTAINER) -p $(APP_PORT):5173 $(APP_IMAGE)
@@ -21,4 +21,4 @@ stop:
 restart: stop start
 
 test:
-	./gradlew test
+	$(GRADLEW) test
