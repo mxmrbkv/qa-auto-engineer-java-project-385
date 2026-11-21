@@ -1,7 +1,6 @@
 package pages;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -23,8 +22,6 @@ public class TasksPage extends BasePage {
     private final By contentInput = By.name("content");
     private final By assigneeSelect = By.xpath("//div[contains(@class, 'ra-input-assignee_id')]//div[@role='combobox'] | //div[contains(@class, 'ra-input-assignee_id')]//*[@role='button']");
     private final By statusSelect = By.xpath("//div[contains(@class, 'ra-input-status_id')]//div[@role='combobox'] | //div[contains(@class, 'ra-input-status_id')]//*[@role='button']");
-    private final By saveButton = By.cssSelector("button[type='submit']");
-    private final By deleteButton = By.xpath("//button[@aria-label='Delete' or contains(@class, 'ra-delete-button') or contains(., 'Delete')]");
 
     // Filters on Tasks board
     private final By filterAssigneeSelect = By.xpath("//div[contains(@class, 'filter-field') and contains(@class, 'assignee_id')]//div[@role='combobox'] | //div[contains(@class, 'ra-input-assignee_id')]//div[@role='combobox']");
@@ -193,10 +190,7 @@ public class TasksPage extends BasePage {
                 By.xpath("//ul[@role='listbox']//li[contains(., '" + statusName + "')]")
         ));
         option.click();
-        // Wait for filter to take effect
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException ignored) {}
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//ul[@role='listbox']")));
     }
 
     public void filterByAssignee(String assigneeEmail) {
@@ -208,9 +202,7 @@ public class TasksPage extends BasePage {
                 By.xpath("//ul[@role='listbox']//li[contains(., '" + assigneeEmail + "')]")
         ));
         option.click();
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException ignored) {}
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//ul[@role='listbox']")));
     }
 
     public void filterByLabel(String labelName) {
@@ -222,9 +214,7 @@ public class TasksPage extends BasePage {
                 By.xpath("//ul[@role='listbox']//li[contains(., '" + labelName + "')]")
         ));
         option.click();
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException ignored) {}
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//ul[@role='listbox']")));
     }
 
     public String getTitleInputValue() {
@@ -233,14 +223,5 @@ public class TasksPage extends BasePage {
 
     public String getContentInputValue() {
         return waitForVisibility(contentInput).getDomProperty("value");
-    }
-
-    private void clearAndSendKeys(WebElement element, String text) {
-        element.click();
-        element.sendKeys(Keys.chord(Keys.CONTROL, "a"));
-        element.sendKeys(Keys.BACK_SPACE);
-        if (text != null && !text.isEmpty()) {
-            element.sendKeys(text);
-        }
     }
 }

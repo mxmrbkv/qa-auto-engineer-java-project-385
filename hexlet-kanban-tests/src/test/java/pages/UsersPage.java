@@ -3,7 +3,6 @@ package pages;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -13,21 +12,15 @@ public class UsersPage extends BasePage {
     // List Page Locators
     private final By usersNavMenu = By.xpath("//nav//a[contains(@href, '#/users')] | //a[contains(@href, '#/users')]");
     private final By createButton = By.xpath("//a[contains(@href, '#/users/create')]");
-    private final By table = By.cssSelector("table");
-    private final By tableRows = By.cssSelector("table tbody tr");
     private final By columnEmailHeader = By.cssSelector("th.column-email");
     private final By columnFirstNameHeader = By.cssSelector("th.column-firstName");
     private final By columnLastNameHeader = By.cssSelector("th.column-lastName");
     private final By emailCells = By.cssSelector("table tbody td.column-email");
-    private final By selectAllSpan = By.cssSelector("th span.select-all");
-    private final By bulkDeleteButton = By.cssSelector("div.RaBulkActionsToolbar-toolbar button[aria-label='Delete']");
 
     // Form Page Locators
     private final By emailInput = By.name("email");
     private final By firstNameInput = By.name("firstName");
     private final By lastNameInput = By.name("lastName");
-    private final By saveButton = By.cssSelector("button[type='submit']");
-    private final By deleteButton = By.xpath("//button[@aria-label='Delete' or contains(@class, 'ra-delete-button') or contains(., 'Delete')]");
     private final By emailError = By.xpath("//p[contains(@class, 'Mui-error') or contains(@class, 'MuiFormHelperText-root')][contains(., 'email') or contains(., 'format')]");
 
     public UsersPage(WebDriver driver, String baseUrl) {
@@ -53,21 +46,16 @@ public class UsersPage extends BasePage {
     }
 
     public void fillForm(String email, String firstName, String lastName) {
-        WebElement emailEl = waitForVisibility(emailInput);
-        clearAndSendKeys(emailEl, email);
-
-        WebElement firstEl = waitForVisibility(firstNameInput);
-        clearAndSendKeys(firstEl, firstName);
-
-        WebElement lastEl = waitForVisibility(lastNameInput);
-        clearAndSendKeys(lastEl, lastName);
+        clearAndSendKeys(emailInput, email);
+        clearAndSendKeys(firstNameInput, firstName);
+        clearAndSendKeys(lastNameInput, lastName);
     }
 
     public void createUser(String email, String firstName, String lastName) {
         openCreateForm();
         fillForm(email, firstName, lastName);
-        waitForClickable(saveButton).click();
-        wait.until(ExpectedConditions.not(ExpectedConditions.urlContains("/create")));
+        clickSave();
+        waitForUrlNotContains("/create");
         openUsersPage();
     }
 
@@ -81,7 +69,7 @@ public class UsersPage extends BasePage {
 
     public void updateUser(String newEmail, String newFirstName, String newLastName) {
         fillForm(newEmail, newFirstName, newLastName);
-        waitForClickable(saveButton).click();
+        clickSave();
         waitForVisibility(table);
     }
 
@@ -93,24 +81,6 @@ public class UsersPage extends BasePage {
     public void deleteUser(String email) {
         openEditFormForUser(email);
         deleteCurrentUserInEditForm();
-    }
-
-    public void selectAll() {
-        waitForClickable(selectAllSpan).click();
-    }
-
-    public void deleteSelected() {
-        waitForClickable(bulkDeleteButton).click();
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(bulkDeleteButton));
-        wait.until(d -> d.findElements(tableRows).isEmpty());
-    }
-
-    public boolean isTableDisplayed() {
-        try {
-            return waitForVisibility(table).isDisplayed();
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     public boolean areKeyHeadersDisplayed() {
@@ -136,12 +106,7 @@ public class UsersPage extends BasePage {
     }
 
     public int getUsersCount() {
-        try {
-            waitForVisibility(table);
-            return driver.findElements(tableRows).size();
-        } catch (Exception e) {
-            return 0;
-        }
+        return getTableRowsCount();
     }
 
     public String getEmailInputValue() {
@@ -175,15 +140,6 @@ public class UsersPage extends BasePage {
                     && waitForVisibility(lastNameInput).isDisplayed();
         } catch (Exception e) {
             return false;
-        }
-    }
-
-    private void clearAndSendKeys(WebElement element, String text) {
-        element.click();
-        element.sendKeys(Keys.chord(Keys.CONTROL, "a"));
-        element.sendKeys(Keys.BACK_SPACE);
-        if (text != null && !text.isEmpty()) {
-            element.sendKeys(text);
         }
     }
 }
