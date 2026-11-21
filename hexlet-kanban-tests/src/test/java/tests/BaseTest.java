@@ -15,6 +15,12 @@ public class BaseTest {
         driver = DriverFactory.create();
     }
 
+    protected void loginAsAdmin() {
+        pages.LoginPage loginPage = new pages.LoginPage(driver, baseUrl);
+        loginPage.openLoginPage();
+        loginPage.login("admin", "password");
+    }
+
     @AfterEach
     public void tearDown() {
         if (driver != null) {
