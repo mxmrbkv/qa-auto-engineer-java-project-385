@@ -4,6 +4,11 @@ APP_PORT ?= 5173
 
 .PHONY: start stop restart test install
 
+GRADLEW = ./gradlew
+ifeq ($(OS),Windows_NT)
+	GRADLEW = gradlew
+endif
+
 install:
 	./gradlew testClasses
 
